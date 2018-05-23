@@ -1,21 +1,38 @@
 import serial
 import socket
+import requests
+from semail import send_simple_message
 
+ipdoc = open("ip.txt","r")
+previp = ipdoc.readline()
+curip = requests.get('http://ident.me').text
+ipdoc.close()
+print(previp, curip)
 
-#TCP_IP = '2601:644:400:5b6b:bdce:61c5:afcc:6e48'
-TCP_IP = '10.0.0.76'
+if previp != curip :
+    ipdoc = open("ip.txt","w")
+    ipdoc.write(curip)
+    send_simple_message(curip)
+    ipdoc.close()
+    
+
+TCP_IP = 'localhost'
+
 BUFFER_SIZE = 20 
 TCP_PORT = 5005
 BUFFER_SIZE = 20
 
+if len(TCP_IP) > 15:
+    s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+    s.bind((TCP_IP, TCP_PORT, 0, 0))
+else:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((TCP_IP, TCP_PORT))
+
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)
 print('Connection to serial ' + ser.name + 'established.\n')
 
-#s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-#s.bind((TCP_IP, TCP_PORT, 0, 0))
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((TCP_IP, TCP_PORT))
 s.listen(1)
 
 conn, addr = s.accept()
@@ -34,3 +51,4 @@ while 1:
     print(d)
 conn.close()
 ser.close()          
+
