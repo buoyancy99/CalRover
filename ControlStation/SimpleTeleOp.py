@@ -6,7 +6,7 @@ import sys
 def nothing(x):
     pass
 
-TCP_IP = '10.0.0.76'
+TCP_IP = '107.77.75.66'
 TCP_PORT = 5005
 BUFFER_SIZE = 1024
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
